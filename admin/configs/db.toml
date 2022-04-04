@@ -1,0 +1,2 @@
+[MyBlog]
+    DSN = "root:2014154020xS.@tcp(127.0.0.1:3306)/myBlog?charset=utf8mb4&parseTime=True&loc=Local"
