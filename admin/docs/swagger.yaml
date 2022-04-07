@@ -1,0 +1,79 @@
+basePath: /my-blog
+definitions:
+  model.LoginResp:
+    properties:
+      id:
+        type: integer
+      token:
+        type: string
+      username:
+        type: string
+    type: object
+host: localhost
+info:
+  contact:
+    email: support@swagger.io
+    name: 这里写联系人信息
+    url: http://www.swagger.io/support
+  description: --
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  termsOfService: http://swagger.io/terms/
+  title: myBlog
+  version: "1.0"
+paths:
+  /login:
+    post:
+      consumes:
+      - application/json
+      description: 根据用户名和密码登录
+      parameters:
+      - in: query
+        name: password
+        type: string
+      - in: query
+        name: username
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.LoginResp'
+      security:
+      - ApiKeyAuth: []
+      summary: login 登录接口
+      tags:
+      - users
+  /posts2:
+    get:
+      consumes:
+      - application/json
+      description: 根据用户名密码角色增加用户
+      parameters:
+      - description: Bearer 用户令牌
+        in: header
+        name: Authorization
+        type: string
+      - in: query
+        name: password
+        type: string
+      - in: query
+        name: role
+        type: integer
+      - in: query
+        name: username
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      security:
+      - ApiKeyAuth: []
+      summary: 增加用户信息
+      tags:
+      - users
+swagger: "2.0"

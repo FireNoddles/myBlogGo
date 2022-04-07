@@ -1,14 +1,13 @@
 package dao
 
 import (
-	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/gorm"
-	"my_blog/domain/model"
 )
 
 type Dao interface {
 	close()
-	CheckLogin(c *gin.Context, where string, paras ...interface{}) (user *model.Users, err error)
+	UserDao
+	CategoryDao
 }
 
 type dao struct {
