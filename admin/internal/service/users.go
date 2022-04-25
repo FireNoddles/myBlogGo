@@ -8,6 +8,7 @@ import (
 	"my_blog/admin/internal/model"
 	dmDao "my_blog/domain/model"
 	. "my_blog/utils"
+	"strings"
 )
 
 func (s *Service) Login(c *gin.Context, req *model.LoginReq) (status int, message string, data *model.LoginResp) {
@@ -64,6 +65,12 @@ func setToken(c *gin.Context, user *model.LoginReq) (string, error) {
 }
 
 func (s *Service) AddUser(c *gin.Context, req *model.AddUserReq) (status int, message string) {
+	if req.Username == "" || req.Password == "" || req.Role == 0 {
+		status = ERROR_REQ_PARAS
+		message = GetErrMsg(status)
+		return
+	}
+
 	existUser, err := s.dmDao.ExistUserPreCheck(c, "username = ? and state <> ?", req.Username, dmDao.UserDelete)
 	if err != nil {
 		log.Error("s.dmDao.AddUserPreCheck err [%v]", err)
@@ -108,6 +115,53 @@ func (s *Service) DelUser(c *gin.Context, req *model.DelUserReq) (status int, me
 	}
 	status = SUCCSE
 	message = GetErrMsg(status)
+	return
+}
+
+func (s *Service) GetUsersList(c *gin.Context, req *model.GetUsersReq) (status int, message string, data *model.GetUsersResp) {
+	where, paras := formatUsersListSearchParas(req)
+	res, err := s.dmDao.GetUsersList(c, where, paras...)
+	if err != nil {
+		status = ERROR
+		message = GetErrMsg(status)
+		return
+	}
+	data = new(model.GetUsersResp)
+	for _, val := range res {
+		d := &model.GetUsersReq{
+			Id:       val.ID,
+			Username: val.Username,
+			Role:     val.Role,
+		}
+		data.List = append(data.List, d)
+	}
+	status = SUCCSE
+	message = GetErrMsg(status)
+
+	return
+}
+
+func formatUsersListSearchParas(req *model.GetUsersReq) (where string, paras []interface{}) {
+	whereArr := []string{}
+	if req.Id != 0 {
+		whereArr = append(whereArr, "id = ?")
+		paras = append(paras, req.Id)
+	}
+
+	if req.Role != 0 {
+		whereArr = append(whereArr, "role = ?")
+		paras = append(paras, req.Role)
+	}
+
+	if req.Username != "" {
+		whereArr = append(whereArr, "username like ?")
+		paras = append(paras, "%"+req.Username+"%")
+	}
+
+	whereArr = append(whereArr, "state <> ?")
+	paras = append(paras, dmDao.UserDelete)
+
+	where = strings.Join(whereArr, " and ")
 	return
 }
 

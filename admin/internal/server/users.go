@@ -5,6 +5,7 @@ import (
 	log "github.com/sirupsen/logrus"
 	"my_blog/admin/internal/model"
 	. "my_blog/utils"
+	"time"
 )
 
 // login 登录接口
@@ -30,6 +31,13 @@ func login(c *gin.Context) {
 	svc.Render(c, s, m, d)
 
 }
+func test(c *gin.Context) {
+	a := time.Now()
+	log.Info("start", a, &svc)
+	time.Sleep(20 * time.Second)
+	log.Info("over", a)
+	svc.Render(c, SUCCSE, "", nil)
+}
 
 // addUser 增加用户
 // @Summary 增加用户信息
@@ -48,7 +56,7 @@ func addUser(c *gin.Context) {
 	if err != nil {
 		log.Error("bind addUser req false")
 		svc.Render(c, ERROR_REQ_PARAS, GetErrMsg(ERROR_REQ_PARAS), nil)
-
+		return
 	}
 	log.Info("start adduser, req [%v]", req)
 	s, m := svc.AddUser(c, req)
@@ -98,11 +106,25 @@ func updateUser(c *gin.Context) {
 	if err != nil {
 		log.Error("bind UpdateUser req false")
 		svc.Render(c, ERROR_REQ_PARAS, GetErrMsg(ERROR_REQ_PARAS), nil)
-
+		return
 	}
 	log.Info("start UpdateUser, req [%v]", req)
 	s, m := svc.UpdateUser(c, req)
 	svc.Render(c, s, m, nil)
+
+}
+
+func getUserList(c *gin.Context) {
+	req := &model.GetUsersReq{}
+	err := c.ShouldBind(req)
+	if err != nil {
+		log.Error("bind getUserList req false")
+		svc.Render(c, ERROR_REQ_PARAS, GetErrMsg(ERROR_REQ_PARAS), nil)
+		return
+	}
+	log.Info("start UpdateUser, req [%v]", req)
+	s, m, d := svc.GetUsersList(c, req)
+	svc.Render(c, s, m, d)
 
 }
 

@@ -54,7 +54,7 @@ func (s *Service) AddCategory(c *gin.Context, req *model.AddCategoryReq) (state 
 	}
 	err := s.dmDao.AddCategory(c, category)
 	if err != nil {
-		log.Error("bind updatePwd req false")
+		log.Error("s.dmDao.AddCategory err ->", err)
 		state = ERROR
 		message = GetErrMsg(state)
 	}
@@ -73,20 +73,32 @@ func formatParas(req *model.GetCategoryReq) (where string, paras []interface{}) 
 		whereArr = append(whereArr, "name like ?")
 		paras = append(paras, "%"+req.Name+"%")
 	}
+
+	whereArr = append(whereArr, "state <> ?")
+	paras = append(paras, dmDao.CategoryDelete)
+	
 	where = strings.Join(whereArr, " and ")
 	return
 }
 
-func (s *Service) GetCategory(c *gin.Context, req *model.GetCategoryReq) (state int, message string, data []*dmDao.Category) {
+func (s *Service) GetCategory(c *gin.Context, req *model.GetCategoryReq) (state int, message string, data *model.GetCategoryListResp) {
+	data = new(model.GetCategoryListResp)
 	where, paras := formatParas(req)
-	data, err := s.dmDao.GetCategoryList(c, where, paras...)
+	res, err := s.dmDao.GetCategoryList(c, where, paras...)
 	if err != nil {
 		log.Error("s.dmDao.GetCategoryList err ->", err)
 		state = ERROR
 		message = GetErrMsg(state)
 		return
 	}
-	state = ERROR
+	for _, val := range res {
+		t := &model.CategoryList{
+			Id:   val.ID,
+			Name: val.Name,
+		}
+		data.List = append(data.List, t)
+	}
+	state = SUCCSE
 	message = GetErrMsg(state)
 	return
 }

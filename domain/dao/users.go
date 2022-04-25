@@ -14,6 +14,20 @@ type UserDao interface {
 	DelUser(c *gin.Context, where string, paras ...interface{}) (err error)
 	UpdateUser(c *gin.Context, user *model.Users) (err error)
 	UpdateUserPwd(c *gin.Context, user *model.Users) (err error)
+	GetUsersList(c *gin.Context, where string, paras ...interface{}) (users []*model.Users, err error)
+}
+
+func (d *dao) GetUsersList(c *gin.Context, where string, paras ...interface{}) (users []*model.Users, err error) {
+	return d.GetUsersListInTx(c, where, paras...)
+}
+
+func (d *dao) GetUsersListInTx(c *gin.Context, where string, paras ...interface{}) (users []*model.Users, err error) {
+	err = d.DbMyBlog.Where(where, paras...).Find(&users).Error
+	if err != nil {
+		log.Error("d.GetUsersListInTx err -> ", err)
+		return
+	}
+	return
 }
 
 func (d *dao) CheckLogin(c *gin.Context, where string, paras ...interface{}) (user *model.Users, err error) {

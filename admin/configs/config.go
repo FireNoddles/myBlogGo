@@ -22,9 +22,21 @@ type ServerConfig struct {
 	Timeout string
 }
 
+type UploadServerConfig struct {
+	QiNiu *QiNiu
+}
+
+type QiNiu struct {
+	AccessKey string `toml:"AccessKey"`
+	SecretKey string `toml:"SecretKey"`
+	Bucket    string `toml:"Bucket"`
+	Server    string `toml:"Server"`
+}
+
 type Configs struct {
 	Db     *DbConfig
 	Server *ServerConfig
+	QiNiu  *UploadServerConfig
 }
 
 func NewDbConfig() *DbConfig {
@@ -36,6 +48,15 @@ func NewDbConfig() *DbConfig {
 	return dc
 }
 
+func NewUploadConfig() *UploadServerConfig {
+	uc := &UploadServerConfig{}
+	if _, err := toml.DecodeFile("D:\\GoProjects\\src\\my_blog\\admin\\configs\\qiniu.toml", uc); err != nil {
+		log.Error("read db toml false, err [%v]", err)
+		panic(err)
+	}
+	return uc
+}
+
 func NewServerConfig() *ServerConfig {
 	sc := &ServerConfig{}
 	if _, err := toml.DecodeFile("D:\\GoProjects\\src\\my_blog\\admin\\configs\\http.toml", sc); err != nil {
@@ -45,10 +66,11 @@ func NewServerConfig() *ServerConfig {
 	return sc
 }
 
-func NewConfigs(Db *DbConfig, Sc *ServerConfig) *Configs {
+func NewConfigs(Db *DbConfig, Sc *ServerConfig, Uc *UploadServerConfig) *Configs {
 	c := &Configs{
 		Db:     Db,
 		Server: Sc,
+		QiNiu:  Uc,
 	}
 	return c
 }

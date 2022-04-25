@@ -8,6 +8,8 @@ type Dao interface {
 	close()
 	UserDao
 	CategoryDao
+	ArticleDao
+	UploadDao
 }
 
 type dao struct {

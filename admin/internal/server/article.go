@@ -7,21 +7,21 @@ import (
 	. "my_blog/utils"
 )
 
-func updateCategory(c *gin.Context) {
-	req := &model.UpdateCategoryReq{}
+func updateArticle(c *gin.Context) {
+	req := &model.UpdateArticleReq{}
 	err := c.ShouldBindJSON(req)
 	if err != nil {
-		log.Error("bind updateCategory req false")
+		log.Error("bind updateArticle req false")
 		svc.Render(c, ERROR_REQ_PARAS, GetErrMsg(ERROR_REQ_PARAS), nil)
 
 	}
-	log.Info("start updateCategory, req [%v]", req)
-	s, m := svc.UpdateCategory(c, req)
+	log.Info("start updateArticle, req [%v]", req)
+	s, m := svc.UpdateArticle(c, req)
 	svc.Render(c, s, m, nil)
 
 }
 
-func delCategory(c *gin.Context) {
+func delArticle(c *gin.Context) {
 	req := &model.DeleteCategoryReq{}
 	err := c.ShouldBindJSON(req)
 	if err != nil {
@@ -34,31 +34,44 @@ func delCategory(c *gin.Context) {
 
 }
 
-func addCategory(c *gin.Context) {
-	req := &model.AddCategoryReq{}
+func addArticle(c *gin.Context) {
+	req := &model.AddArticleReq{}
 	err := c.ShouldBindJSON(req)
 	if err != nil {
-		log.Error("bind addCategory req false")
+		log.Error("bind addArticle req false")
 		svc.Render(c, ERROR_REQ_PARAS, GetErrMsg(ERROR_REQ_PARAS), nil)
-		return
 
 	}
-	log.Info("start addCategory, req [%v]", req)
-	s, m := svc.AddCategory(c, req)
+	log.Info("start addArticle, req [%v]", req)
+	s, m := svc.AddArticle(c, req)
 	svc.Render(c, s, m, nil)
 
 }
 
-func getCategory(c *gin.Context) {
-	req := &model.GetCategoryReq{}
-	err := c.ShouldBind(req)
+func getArticleInfo(c *gin.Context) {
+	req := &model.GetArticleInfoReq{}
+	err := c.ShouldBindJSON(req)
+	if err != nil {
+		log.Error("bind getArticleInfo req false")
+		svc.Render(c, ERROR_REQ_PARAS, GetErrMsg(ERROR_REQ_PARAS), nil)
+
+	}
+	log.Info("start getArticleInfo, req [%v]", req)
+	s, m, d := svc.GetArticleInfo(c, req)
+	svc.Render(c, s, m, d)
+
+}
+
+func getArticleList(c *gin.Context) {
+	req := &model.GetArticleListReq{}
+	err := c.ShouldBindJSON(req)
 	if err != nil {
 		log.Error("bind getCategory req false")
 		svc.Render(c, ERROR_REQ_PARAS, GetErrMsg(ERROR_REQ_PARAS), nil)
-		return
+
 	}
 	log.Info("start getCategory, req [%v]", req)
-	s, m, d := svc.GetCategory(c, req)
+	s, m, d := svc.GetArticleList(c, req)
 	svc.Render(c, s, m, d)
 
 }

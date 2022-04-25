@@ -11,8 +11,10 @@ import (
 func Init() (func(), error) {
 	dbConf := configs.NewDbConfig()
 	sConf := configs.NewServerConfig()
-	ac := configs.NewConfigs(dbConf, sConf)
+	upConf := configs.NewUploadConfig()
+	ac := configs.NewConfigs(dbConf, sConf, upConf)
 	db, cf, err := dao.NewMysql(dbConf)
+
 	if err != nil {
 		log.Error("init dao.NewMysql err [%v]", err)
 		return nil, err

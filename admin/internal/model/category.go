@@ -10,8 +10,8 @@ type DeleteCategoryReq struct {
 }
 
 type GetCategoryReq struct {
-	Id   uint   `json:"id"`
-	Name string `json:"name"`
+	Id   uint   `json:"id" form:"id"`
+	Name string `json:"name" form:"name"`
 }
 
 type AddCategoryReq struct {
@@ -19,10 +19,10 @@ type AddCategoryReq struct {
 }
 
 type GetCategoryListResp struct {
-	list *CategoryList `json:"list"`
+	List []*CategoryList `json:"list"`
 }
 
 type CategoryList struct {
-	Id   string `json:"id"`
+	Id   uint   `json:"id"`
 	Name string `json:"name"`
 }
