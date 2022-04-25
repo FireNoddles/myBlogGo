@@ -64,6 +64,7 @@ func (s *Service) AddCategory(c *gin.Context, req *model.AddCategoryReq) (state 
 }
 
 func formatParas(req *model.GetCategoryReq) (where string, paras []interface{}) {
+
 	whereArr := []string{}
 	if req.Id != 0 {
 		whereArr = append(whereArr, "id = ?")
@@ -76,7 +77,7 @@ func formatParas(req *model.GetCategoryReq) (where string, paras []interface{}) 
 
 	whereArr = append(whereArr, "state <> ?")
 	paras = append(paras, dmDao.CategoryDelete)
-	
+
 	where = strings.Join(whereArr, " and ")
 	return
 }
