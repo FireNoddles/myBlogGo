@@ -64,11 +64,11 @@ func getArticleInfo(c *gin.Context) {
 
 func getArticleList(c *gin.Context) {
 	req := &model.GetArticleListReq{}
-	err := c.ShouldBindJSON(req)
+	err := c.ShouldBind(req)
 	if err != nil {
-		log.Error("bind getCategory req false")
+		log.Error("bind getArticleList req false")
 		svc.Render(c, ERROR_REQ_PARAS, GetErrMsg(ERROR_REQ_PARAS), nil)
-
+		return
 	}
 	log.Info("start getCategory, req [%v]", req)
 	s, m, d := svc.GetArticleList(c, req)

@@ -84,8 +84,12 @@ func formatSearchArticleListParas(req *model.GetArticleListReq) (where string, p
 
 	if req.Cid != 0 {
 		whereArr = append(whereArr, "cid = ?")
-		paras = append(paras, "%"+req.Name+"%")
+		paras = append(paras, req.Cid)
 	}
+
+	whereArr = append(whereArr, "state <> ?")
+	paras = append(paras, dmDao.ArticleDelete)
+
 	where = strings.Join(whereArr, " and ")
 	return
 }
@@ -99,6 +103,7 @@ func (s *Service) GetArticleList(c *gin.Context, req *model.GetArticleListReq) (
 		message = GetErrMsg(state)
 		return
 	}
+	data = new(model.GetArticleListResp)
 	data.Total = total
 	for _, val := range res {
 		temp := &model.GetArticleListData{
@@ -108,6 +113,7 @@ func (s *Service) GetArticleList(c *gin.Context, req *model.GetArticleListReq) (
 			Cid:          val.Cid,
 			CommentCount: val.CommentCount,
 			ReadCount:    val.ReadCount,
+			UpdateTime:   val.UpdatedAt,
 		}
 		data.List = append(data.List, temp)
 	}
