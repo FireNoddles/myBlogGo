@@ -9,7 +9,7 @@ import (
 
 type ArticleDao interface {
 	GetArticleList(c *gin.Context, pageSize int, pageNum int, where string, paras ...interface{}) (articles []*model.Article, total int, err error)
-	GetArticleInfo(c *gin.Context, where string, paras ...interface{}) (article *model.Article, err error)
+	GetArticleInfo(c *gin.Context, where string, paras ...interface{}) (articles []*model.Article, err error)
 	UpdateArticle(c *gin.Context, article *model.Article) (err error)
 	AddArticle(c *gin.Context, article *model.Article) (err error)
 	DelArticle(c *gin.Context, article *model.Article) (err error)
@@ -35,15 +35,15 @@ func (d *dao) GetArticleList(c *gin.Context, pageSize int, pageNum int, where st
 	return
 }
 
-func (d *dao) GetArticleInfo(c *gin.Context, where string, paras ...interface{}) (article *model.Article, err error) {
-	articles, err := d.GetArticleInfoInTx(c, where, paras...)
-	return articles[0], err
+func (d *dao) GetArticleInfo(c *gin.Context, where string, paras ...interface{}) (articles []*model.Article, err error) {
+	articles, err = d.GetArticleInfoInTx(c, where, paras...)
+	return articles, err
 }
 
 func (d *dao) UpdateArticle(c *gin.Context, article *model.Article) (err error) {
 	data := map[string]interface{}{
 		"name":         article.Name,
-		"updated_time": article.UpdatedAt,
+		"updated_time": article.UpdatedTime,
 		"cid":          article.Cid,
 		"desc":         article.Desc,
 		"content":      article.Content,
@@ -59,7 +59,7 @@ func (d *dao) AddArticle(c *gin.Context, article *model.Article) (err error) {
 func (d *dao) DelArticle(c *gin.Context, article *model.Article) (err error) {
 	data := map[string]interface{}{
 		"state":        article.State,
-		"updated_time": article.UpdatedAt,
+		"updated_time": article.UpdatedTime,
 	}
 	return d.UpdateArticleInTx(c, article, data)
 }

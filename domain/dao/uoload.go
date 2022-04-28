@@ -22,7 +22,7 @@ func (d *dao) UpLoadFile(c *gin.Context, file multipart.File, fileSize int64, bu
 	upToken := putPolicy.UploadToken(mac)
 
 	cfg := storage.Config{
-		Zone:          &storage.ZoneHuadong,
+		Zone:          &storage.ZoneHuanan,
 		UseCdnDomains: false,
 		UseHTTPS:      false,
 	}

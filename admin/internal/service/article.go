@@ -12,13 +12,13 @@ import (
 
 func (s *Service) UpdateArticle(c *gin.Context, req *model.UpdateArticleReq) (state int, message string) {
 	art := &dmDao.Article{
-		ID:        req.Id,
-		Name:      req.Name,
-		Cid:       req.Cid,
-		Desc:      req.Desc,
-		Content:   req.Content,
-		Img:       req.Img,
-		UpdatedAt: time.Now(),
+		ID:          req.Id,
+		Name:        req.Name,
+		Cid:         req.Cid,
+		Desc:        req.Desc,
+		Content:     req.Content,
+		Img:         req.Img,
+		UpdatedTime: time.Now(),
 	}
 	err := s.dmDao.UpdateArticle(c, art)
 	if err != nil {
@@ -34,9 +34,9 @@ func (s *Service) UpdateArticle(c *gin.Context, req *model.UpdateArticleReq) (st
 
 func (s *Service) DelArticle(c *gin.Context, req *model.DelArticleReq) (state int, message string) {
 	art := &dmDao.Article{
-		ID:        req.Id,
-		UpdatedAt: time.Now(),
-		State:     dmDao.ArticleDelete,
+		ID:          req.Id,
+		UpdatedTime: time.Now(),
+		State:       dmDao.ArticleDelete,
 	}
 	err := s.dmDao.DelArticle(c, art)
 	if err != nil {
@@ -52,13 +52,14 @@ func (s *Service) DelArticle(c *gin.Context, req *model.DelArticleReq) (state in
 
 func (s *Service) AddArticle(c *gin.Context, req *model.AddArticleReq) (state int, message string) {
 	art := &dmDao.Article{
-		State:     dmDao.ArticleInUse,
-		Name:      req.Name,
-		Cid:       req.Cid,
-		Desc:      req.Desc,
-		Content:   req.Content,
-		Img:       req.Img,
-		CreatedAt: time.Now(),
+		State:       dmDao.ArticleInUse,
+		Name:        req.Name,
+		Cid:         req.Cid,
+		Desc:        req.Desc,
+		Content:     req.Content,
+		Img:         req.Img,
+		CreatedTime: time.Now(),
+		CmtCount:    0,
 	}
 	err := s.dmDao.AddArticle(c, art)
 	if err != nil {
@@ -111,9 +112,9 @@ func (s *Service) GetArticleList(c *gin.Context, req *model.GetArticleListReq) (
 			Name:         val.Name,
 			Desc:         val.Desc,
 			Cid:          val.Cid,
-			CommentCount: val.CommentCount,
+			CommentCount: val.CmtCount,
 			ReadCount:    val.ReadCount,
-			UpdateTime:   val.UpdatedAt,
+			UpdateTime:   val.UpdatedTime,
 		}
 		data.List = append(data.List, temp)
 	}
@@ -123,19 +124,25 @@ func (s *Service) GetArticleList(c *gin.Context, req *model.GetArticleListReq) (
 }
 
 func (s *Service) GetArticleInfo(c *gin.Context, req *model.GetArticleInfoReq) (state int, message string, data *model.GetArticleInfoResp) {
-	res, err := s.dmDao.GetArticleInfo(c, "id = ?", req.Id)
-	data = new(model.GetArticleInfoResp)
-	data.Content = res.Content
-	data.Img = res.Img
-	data.Name = res.Name
-	data.Cid = res.Cid
-	data.Id = res.ID
-	data.Desc = res.Desc
-	data.CommentCount = res.CommentCount
-	data.ReadCount = res.ReadCount
+	result, err := s.dmDao.GetArticleInfo(c, "id = ?", req.Id)
 	if err != nil {
 		log.Error("s.dmDao.GetArticleInfo err ->", err)
 		state = ERROR
+		message = GetErrMsg(state)
+		return
+	}
+	data = new(model.GetArticleInfoResp)
+	if len(result) == 1 {
+		res := result[0]
+		data.Content = res.Content
+		data.Img = res.Img
+		data.Name = res.Name
+		data.Cid = res.Cid
+		data.Id = res.ID
+		data.Desc = res.Desc
+		data.CommentCount = res.CmtCount
+		data.ReadCount = res.ReadCount
+		state = SUCCSE
 		message = GetErrMsg(state)
 		return
 	}

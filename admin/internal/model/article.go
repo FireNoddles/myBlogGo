@@ -4,7 +4,7 @@ import "time"
 
 type AddArticleReq struct {
 	Name    string `gorm:"type:varchar(20);not null" json:"name"`
-	Cid     int    `gorm:"type:int;not null" json:"cid"`
+	Cid     int    `gorm:"type:int;not null" json:"category_id"`
 	Desc    string `gorm:"type:varchar(200)" json:"desc"`
 	Content string `gorm:"type:longtext" json:"content"`
 	Img     string `gorm:"type:varchar(200)" json:"img"`
@@ -15,7 +15,7 @@ type DelArticleReq struct {
 }
 
 type GetArticleInfoReq struct {
-	Id uint `json:"id"`
+	Id uint `form:"id"`
 }
 
 type GetArticleListReq struct {

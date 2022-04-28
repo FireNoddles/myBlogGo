@@ -16,7 +16,7 @@ func (s *Service) UploadFile(c *gin.Context, req *model.UploadReq) (state int, m
 		return
 	}
 	data = new(model.UploadFileResp)
-	data.Url = s.conf.QiNiu.QiNiu.Server + key
+	data.Url = s.conf.QiNiu.QiNiu.Server + "/" + key
 	state = SUCCSE
 	message = GetErrMsg(state)
 	return

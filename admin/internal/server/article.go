@@ -40,7 +40,7 @@ func addArticle(c *gin.Context) {
 	if err != nil {
 		log.Error("bind addArticle req false")
 		svc.Render(c, ERROR_REQ_PARAS, GetErrMsg(ERROR_REQ_PARAS), nil)
-
+		return
 	}
 	log.Info("start addArticle, req [%v]", req)
 	s, m := svc.AddArticle(c, req)
@@ -50,11 +50,11 @@ func addArticle(c *gin.Context) {
 
 func getArticleInfo(c *gin.Context) {
 	req := &model.GetArticleInfoReq{}
-	err := c.ShouldBindJSON(req)
+	err := c.ShouldBind(req)
 	if err != nil {
 		log.Error("bind getArticleInfo req false")
 		svc.Render(c, ERROR_REQ_PARAS, GetErrMsg(ERROR_REQ_PARAS), nil)
-
+		return
 	}
 	log.Info("start getArticleInfo, req [%v]", req)
 	s, m, d := svc.GetArticleInfo(c, req)
