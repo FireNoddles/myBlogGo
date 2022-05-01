@@ -56,4 +56,13 @@ func initRouter(engine *gin.Engine) {
 
 		g.POST("/file/upload", uploadFile)
 	}
+	i := engine.Group("/my-blog/interface")
+	{
+
+		i.GET("/category/getCategory", getCategory)
+
+		i.GET("/article/getArticleList", getArticleList)
+		i.GET("/article/getArticleInfo", getArticleInfo)
+
+	}
 }
