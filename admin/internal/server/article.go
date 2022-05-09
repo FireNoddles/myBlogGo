@@ -10,9 +10,10 @@ import (
 func updateArticle(c *gin.Context) {
 	req := &model.UpdateArticleReq{}
 	err := c.ShouldBindJSON(req)
-	if err != nil {
+	if err != nil || req.Id == 0 {
 		log.Error("bind updateArticle req false")
 		svc.Render(c, ERROR_REQ_PARAS, GetErrMsg(ERROR_REQ_PARAS), nil)
+		return
 
 	}
 	log.Info("start updateArticle, req [%v]", req)
