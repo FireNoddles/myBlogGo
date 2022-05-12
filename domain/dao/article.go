@@ -11,7 +11,7 @@ type ArticleDao interface {
 	GetArticleList(c *gin.Context, pageSize int, pageNum int, where string, paras ...interface{}) (articles []*model.Article, total int, err error)
 	GetArticleInfo(c *gin.Context, where string, paras ...interface{}) (articles []*model.Article, err error)
 	UpdateArticle(c *gin.Context, article *model.Article) (err error)
-	AddArticle(c *gin.Context, article *model.Article) (err error)
+	AddArticle(c *gin.Context, article *model.Article) (id uint, err error)
 	DelArticle(c *gin.Context, article *model.Article) (err error)
 }
 
@@ -52,7 +52,7 @@ func (d *dao) UpdateArticle(c *gin.Context, article *model.Article) (err error) 
 	return d.UpdateArticleInTx(c, article, data)
 }
 
-func (d *dao) AddArticle(c *gin.Context, article *model.Article) (err error) {
+func (d *dao) AddArticle(c *gin.Context, article *model.Article) (id uint, err error) {
 	return d.AddArticleInTx(c, article)
 }
 
@@ -100,11 +100,12 @@ func (d *dao) UpdateArticleInTx(c *gin.Context, article *model.Article, data map
 	return
 }
 
-func (d *dao) AddArticleInTx(c *gin.Context, article *model.Article) (err error) {
+func (d *dao) AddArticleInTx(c *gin.Context, article *model.Article) (id uint, err error) {
 	err = d.DbMyBlog.Create(&article).Error
 	if err != nil {
 		log.Error("d.AddArticleInTx err ->", err)
 		return
 	}
+	id = article.ID
 	return
 }

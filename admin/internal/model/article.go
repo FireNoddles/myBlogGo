@@ -10,6 +10,10 @@ type AddArticleReq struct {
 	Img     string `gorm:"type:varchar(200)" json:"img"`
 }
 
+type AddArticleResp struct {
+	Id uint `json:"id"`
+}
+
 type DelArticleReq struct {
 	Id uint `json:"id"`
 }

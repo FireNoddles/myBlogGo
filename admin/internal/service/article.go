@@ -50,7 +50,7 @@ func (s *Service) DelArticle(c *gin.Context, req *model.DelArticleReq) (state in
 	return
 }
 
-func (s *Service) AddArticle(c *gin.Context, req *model.AddArticleReq) (state int, message string) {
+func (s *Service) AddArticle(c *gin.Context, req *model.AddArticleReq) (state int, message string, data *model.AddArticleResp) {
 	art := &dmDao.Article{
 		State:       dmDao.ArticleInUse,
 		Name:        req.Name,
@@ -61,12 +61,16 @@ func (s *Service) AddArticle(c *gin.Context, req *model.AddArticleReq) (state in
 		CreatedTime: time.Now(),
 		CmtCount:    0,
 	}
-	err := s.dmDao.AddArticle(c, art)
+
+	id, err := s.dmDao.AddArticle(c, art)
 	if err != nil {
 		log.Error("s.dmDao.AddArticle err ->", err)
 		state = ERROR
 		message = GetErrMsg(state)
 	}
+
+	data = new(model.AddArticleResp)
+	data.Id = id
 	state = SUCCSE
 	message = GetErrMsg(state)
 	return

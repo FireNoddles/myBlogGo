@@ -44,8 +44,8 @@ func addArticle(c *gin.Context) {
 		return
 	}
 	log.Info("start addArticle, req [%v]", req)
-	s, m := svc.AddArticle(c, req)
-	svc.Render(c, s, m, nil)
+	s, m, d := svc.AddArticle(c, req)
+	svc.Render(c, s, m, d)
 
 }
 
